@@ -1,0 +1,58 @@
+<resources>
+    <!-- Strings related to the application -->
+    <string name="app_name">Hospital</string>
+
+    <!-- Strings related to the login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_login">"Email or password is wrong!"</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+
+    <!-- Strings related to the calendar -->
+    <string name="error_no_appoint">No events</string>
+
+    <!-- String related to an new event -->
+    <string name="prompt_name">Eventname</string>
+    <string name="prompt_room">Room</string>
+    <string name="prompt_date_from">Date from</string>
+    <string name="prompt_hour_from">Hour from</string>
+    <string name="prompt_date_to">Date until</string>
+    <string name="prompt_hour_to">Hour until</string>
+    <string name="prompt_dayevent">Whole Day</string>
+    <string name="prompt_notification">Notification</string>
+    <string name="prompt_participants">Patient</string>
+    <string name="prompt_description">Description</string>
+    <string name="error_invalid_eventname">Please enter an event name</string>
+    <string name="error_invalid_datepick">You can not set an event for this date</string>
+    <string name="menu_newEvent_save">Save</string>
+
+    <string-array name="arrray_notification">
+        <item>5 Minuten</item>
+        <item>10 Minuten</item>
+        <item>15 Minuten</item>
+        <item>20 Minuten</item>
+        <item>25 Minuten</item>
+        <item>30 Minuten</item>
+        <item>45 Minuten</item>
+        <item>1 Stunde</item>
+        <item>2 Stunden</item>
+        <item>3 Stunden</item>
+        <item>12 Stunden</item>
+        <item>24 Stunden</item>
+    </string-array>
+
+    <!-- String related to show event -->
+    <string name="menu_showEvent_edit">Edit</string>
+    <string name="menu_showEvent_delete">Delete</string>
+
+    menu_showEvent_edit
+    <string name="title_activity_calender_test">CalenderTest</string>
+    <string name="title_activity_show_event">ShowEvent</string>
+
+</resources>
