@@ -30,12 +30,6 @@ public class Home extends AppCompatActivity {
             doctor = null;
 
 
-
-
-        // Hallo Robi du blöde Fotze
-        // chasch das läsu?
-        // Vertrüüsch mer das wirkli ah?
-
     }
 
 
