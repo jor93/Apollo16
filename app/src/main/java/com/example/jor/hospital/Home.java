@@ -28,10 +28,6 @@ public class Home extends AppCompatActivity {
             doctor = da.getDoctorById(i);
         else
             doctor = null;
-
-
-        // Test
-
     }
 
 
