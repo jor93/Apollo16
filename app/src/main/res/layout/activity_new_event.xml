@@ -99,7 +99,7 @@
                 android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/newEvent_editText_to"
+                        android:id="@+id/newEvent_button_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -159,7 +159,7 @@
                     android:imeActionId="@+id/event_part"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPersonName"
-                    android:singleLine="false" />
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <Button

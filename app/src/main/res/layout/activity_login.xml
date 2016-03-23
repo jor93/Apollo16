@@ -83,7 +83,6 @@
                 android:textSize="20dp"
                 android:gravity="center_horizontal"
                 android:visibility="invisible" />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
