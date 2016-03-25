@@ -61,4 +61,30 @@
 
     <string name="title_activity_database_check">DatabaseCheck</string>
 
+
+
+    <!-- Sandro -->
+
+    <string name="nav_patient">Patients</string>
+    <string name="action_settings">Settings</string>
+    <string name="lbl_pName">Name</string>
+    <string name="lbl_bDate">Birthdate</string>
+    <string name="lbl_Adress">Adress</string>
+    <string name="lbl_City">City</string>
+    <string name="lbl_AHV_Number">AHV Number:</string>
+    <string name="lbl_cRoom">Current Room:</string>
+    <string name="addPatient">Add Patient</string>
+    <string name="addThreatment">Add Threatment</string>
+    <string name="lbl_Title">Title</string>
+    <string name="lbl_tDescription">Description</string>
+    <string name="save">Save</string>
+    <string name="lbl_Doc">Responsible Doctor</string>
+    <string name="lbl_Room">Room</string>
+    <string name="title_activity_patientlist">PatientlistActivity</string>
+    <string name="title_activity_add_patient">AddPatientActivity</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>
