@@ -49,12 +49,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      // Regex checker for valid email address
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
     // Id to identity READ_CONTACTS permission request.
     private static final int REQUEST_READ_CONTACTS = 0;
-    // dummy datas
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "jor@gmail.com:banana","sandro@gmail.com:test"
-    };
 
     // Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
@@ -69,14 +66,13 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private DoctorAdapter da;
     private int doctor_id;
 
+    // getter and setter
     public int getDoctor_id() {
         return doctor_id;
     }
-
     public void setDoctor_id(int doctor_id) {
         this.doctor_id = doctor_id;
     }
-
     public DoctorAdapter getDa() {
         return da;
     }
@@ -85,6 +81,11 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Home home = new Home();
+        if(home.getDoctor() != null){
+            goToHome(home.getDoctor().getId());
+        }
 
         // set up adapter
         da = new DoctorAdapter(this);
@@ -117,6 +118,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    // login with doctor id
     private void goToHome(int id){
         Intent home = new Intent(this, Home.class);
         home.putExtra("doctor_id", id);
@@ -210,14 +212,12 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             focusView = mPasswordView;
             cancel = true;
         }
-
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));

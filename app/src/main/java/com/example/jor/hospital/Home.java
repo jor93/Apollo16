@@ -16,6 +16,10 @@ public class Home extends AppCompatActivity {
 
     private Doctor doctor;
 
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,13 +33,7 @@ public class Home extends AppCompatActivity {
         else
             doctor = null;
 
-
-
-
-        // Hallo Robi du blöde Fotze
-        // chasch das läsu?
-        // Vertrüüsch mer das wirkli ah?
-
+        setTitle(doctor.getName());
     }
 
 
@@ -54,7 +52,6 @@ public class Home extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_logout:
                 logout();
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -62,6 +59,7 @@ public class Home extends AppCompatActivity {
     }
 
     private void goToLogin(){
+        setTitle("Hospital");
         if(doctor != null) doctor = null;
         Intent login = new Intent(this, Login.class);
         startActivity(login);

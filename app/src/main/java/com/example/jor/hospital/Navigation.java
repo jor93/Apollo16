@@ -22,7 +22,6 @@ public abstract class Navigation extends AppCompatActivity implements Navigation
     protected void onCreateDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
 

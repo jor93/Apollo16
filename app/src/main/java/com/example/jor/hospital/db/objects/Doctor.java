@@ -41,6 +41,7 @@ public class Doctor {
     public String getLastname() {
         return lastname;
     }
+
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
@@ -66,6 +67,10 @@ public class Doctor {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getName(){
+        return "Dr. " + getFirstname() + " " +getLastname();
     }
 
     @Override
