@@ -22,14 +22,29 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Home" />
-        <activity android:name=".Calender" />
-        <activity android:name=".NewEvent">
+        <activity android:name=".Home"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Calender"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".NewEvent"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".ShowEvent" />
-        <activity android:name=".DBCheck">
+        <activity android:name=".ShowEvent"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".DBCheck"
+            android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+        <activity
+            android:name=".PatientlistActivity"
+            android:label="@string/title_activity_patientlist"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddPatientActivity"
+            android:label="@string/title_activity_add_patient"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Patient" />
     </application>
 
 </manifest>

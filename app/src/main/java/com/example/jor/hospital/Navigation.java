@@ -63,19 +63,15 @@ public abstract class Navigation extends AppCompatActivity implements Navigation
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_patient) {
+        if (id == R.id.nav_home) {
+            Intent a = new Intent(this, Home.class);
+            startActivity(a);
+        } else if (id == R.id.nav_patient) {
             Intent a = new Intent(this, PatientlistActivity.class);
             startActivity(a);
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_calender) {
+            Intent a = new Intent(this, Calender.class);
+            startActivity(a);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
