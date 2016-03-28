@@ -17,7 +17,6 @@ public class Patient extends Navigation {
     ArrayAdapter<String> adapter;
 
 
-
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {

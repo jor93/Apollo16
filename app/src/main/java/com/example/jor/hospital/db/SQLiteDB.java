@@ -14,7 +14,7 @@ public class SQLiteDB extends SQLiteOpenHelper {
 
     //Infos about database
     private static final String DATABASE_NAME = "apollo16.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static SQLiteDB instance;
 
     //use a singleton

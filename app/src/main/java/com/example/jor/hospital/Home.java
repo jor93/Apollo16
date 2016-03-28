@@ -45,11 +45,14 @@ public class Home extends Navigation {
         Intent intent = getIntent();
         DoctorAdapter da = new DoctorAdapter(this);
         int i = intent.getIntExtra("doctor_id",-1);
-        if(i != -1)
+        if(i != -1) {
             doctor = da.getDoctorById(i);
-        else
+            IdCollection.doctor_id = i;
+        }
+        else {
             doctor = null;
-
+            IdCollection.doctor_id = -1;
+        }
         setTitle(doctor.getName());
     }
 
@@ -75,13 +78,16 @@ public class Home extends Navigation {
         }
     }
 
+    // go to login activity
     private void goToLogin(){
         setTitle("Hospital");
+        IdCollection.doctor_id = -1;
         if(doctor != null) doctor = null;
         Intent login = new Intent(this, Login.class);
         startActivity(login);
     }
 
+    // show confirmation button to log out
     private void logout(){
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -90,7 +96,6 @@ public class Home extends Navigation {
                     case DialogInterface.BUTTON_POSITIVE:
                         goToLogin();
                         break;
-
                     case DialogInterface.BUTTON_NEGATIVE:
                         break;
                 }

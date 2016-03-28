@@ -162,6 +162,8 @@ public final class Tables{
         public static final String KEY_EVENTNAME = "eventname";
         public static final String KEY_FROMDATE = "fromdate";
         public static final String KEY_TODATE = "todate";
+        public static final String KEY_FROMTIME = "fromtime";
+        public static final String KEY_TOTIME = "totime";
         public static final String KEY_NOTIFICATION = "notification";
         public static final String KEY_DESCRIPTION = "description";
         //Event foreign keys
@@ -174,13 +176,15 @@ public final class Tables{
                 + TABLE_EVENT + "("
                 + EventEntry.KEY_EVENT_ID + " INTEGER PRIMARY KEY,"
                 + EventEntry.KEY_EVENTNAME + " TEXT NOT NULL, "
-                + EventEntry.KEY_FROMDATE + " DATE NOT NULL, "
-                + EventEntry.KEY_TODATE + " DATE NOT NULL, "
-                + EventEntry.KEY_NOTIFICATION + " INTEGER NOT NULL, "
+                + EventEntry.KEY_FROMDATE + " INT NOT NULL, "
+                + EventEntry.KEY_TODATE + " INT NOT NULL, "
+                + EventEntry.KEY_FROMTIME + " INT, "
+                + EventEntry.KEY_TOTIME + " INT, "
+                + EventEntry.KEY_NOTIFICATION + " INT NOT NULL, "
                 + EventEntry.KEY_DESCRIPTION + " TEXT, "
-                + EventEntry.KEY_ROOM + " INTEGER NOT NULL, "
-                + EventEntry.KEY_PATIENT + " INTEGER NOT NULL, "
-                + EventEntry.KEY_DOCTOR + " INTEGER NOT NULL, "
+                + EventEntry.KEY_ROOM + " INT NOT NULL, "
+                + EventEntry.KEY_PATIENT + " INT NOT NULL, "
+                + EventEntry.KEY_DOCTOR + " INT NOT NULL, "
                 + "FOREIGN KEY (" + KEY_ROOM + ") REFERENCES " + RoomEntry.TABLE_ROOM + " (" + RoomEntry.KEY_ROOM_ID + "), "
                 + "FOREIGN KEY (" + KEY_PATIENT + ") REFERENCES " + PatientEntry.TABLE_PATIENT + " (" + PatientEntry.KEY_PATIENT_ID + "), "
                 + "FOREIGN KEY (" + KEY_DOCTOR + ") REFERENCES " + DoctorEntry.TABLE_DOCTOR + " (" + DoctorEntry.KEY_DOCTOR_ID + ") "

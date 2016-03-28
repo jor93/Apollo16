@@ -9,6 +9,8 @@ public class Event {
     private int room;
     private int fromDate;
     private int toDate;
+    private int fromTime;
+    private int toTime;
     private int notificiation;
     private int patient;
     private String description;
@@ -16,7 +18,7 @@ public class Event {
 
     public Event(){}
 
-    public Event(int event_id, String eventname, int room, int fromDate, int toDate, int notificiation, int patient, String description, int doctor) {
+    public Event(int event_id, String eventname, int room, int fromDate, int toDate, int fromTime, int toTime,int notificiation, int patient, String description, int doctor) {
         this.event_id = event_id;
         this.eventname = eventname;
         this.room = room;
@@ -26,6 +28,8 @@ public class Event {
         this.patient = patient;
         this.description = description;
         this.doctor = doctor;
+        this.fromTime = fromTime;
+        this.toTime = toTime;
     }
 
     public int getEvent_id() {
@@ -98,5 +102,21 @@ public class Event {
 
     public void setDoctor(int doctor) {
         this.doctor = doctor;
+    }
+
+    public int getFromTime() {
+        return fromTime;
+    }
+
+    public void setFromTime(int fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public int getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(int toTime) {
+        this.toTime = toTime;
     }
 }

@@ -1,12 +1,13 @@
 package com.example.jor.hospital;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,30 +17,34 @@ import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
+
+import com.example.jor.hospital.db.objects.Event;
+
 import java.text.DateFormat;
 
 import java.text.SimpleDateFormat;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class Calender extends Navigation {
 
-    // calender object
+    // UI reference
     private CalendarView calender;
+    private TextView today;
+    private Calendar savedDate;
+
     // Represents the date in the format name of day, day. month
     private DateFormat df = new SimpleDateFormat("EEEE, dd. MMMM");
     private static DateFormat df_global = new SimpleDateFormat("EEEE, dd. MMMM yyyy");
 
-    private TextView today;
-
-    private Calendar savedDate;
-
     // listview object
-    ListView listView;
+    private ListView listView;
+
+    private List<Event> eventsForDay;
 
     //dummy data for events
     String[] values = new String[] {
@@ -84,7 +89,6 @@ public class Calender extends Navigation {
 
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-
                 savedDate = Calendar.getInstance();
                 savedDate.set(year, month, dayOfMonth);
                 today.setText(formatDate(savedDate.getTime()));
@@ -93,19 +97,16 @@ public class Calender extends Navigation {
 
 
         Calendar c = Calendar.getInstance();
-        if(savedDate == null)
-         today.setText(formatDate(c.getTime()));
-        else
-         today.setText((formatDate(savedDate.getTime())));
+        if(savedDate == null) today.setText(formatDate(c.getTime()));
+        else today.setText((formatDate(savedDate.getTime())));
 
         listView = (ListView) findViewById(R.id.calendar_listView_Events);
 
+
         // Defined Array values to show in ListView
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
         // Assign adapter to ListView
         listView.setAdapter(adapter);
-
         // ListView Item Click Listener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -115,10 +116,16 @@ public class Calender extends Navigation {
                 int itemPosition = position;
                 // ListView Clicked item value
                 String itemValue = (String) listView.getItemAtPosition(position);
+                // TODO Open new intent with data here!!!
 
-                // Open new intent with data here!!!
             }
         });
+    }
+
+    private void showEvent(int id){
+        Intent showEvent = new Intent(this, ShowEvent.class);
+        showEvent.putExtra("event_id", id);
+        startActivity(showEvent);
     }
 
     // adding the menu
@@ -143,7 +150,8 @@ public class Calender extends Navigation {
     }
 
     private void goToday(){
-
+        Calendar todayDate = Calendar.getInstance();
+        calender.setDate(todayDate.getTime().getTime());
     }
 
     // returns date in right format
