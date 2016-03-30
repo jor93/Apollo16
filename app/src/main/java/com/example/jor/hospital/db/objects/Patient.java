@@ -98,6 +98,8 @@ public class Patient {
         this.room = room;
     }
 
+    public String getName(){ return getFirstname() + " " +getLastname(); }
+
     @Override
     public String toString() {
         return "Patient{" +

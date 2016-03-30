@@ -11,7 +11,7 @@
     <ScrollView
         android:id="@+id/calendar_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/calendar_overview_form"
@@ -37,22 +37,31 @@
                 android:id="@+id/calendar_textView_today"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:drawableLeft="@drawable/ic_desc_24dp"
+                android:drawablePadding="5dp"
                 android:layout_marginBottom="10dp"
-                android:paddingLeft="40dp"
+                android:paddingLeft="20dp"
                 android:paddingTop="15dp"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:textColor="#000000" />
 
             <View
                 android:id="@+id/calendar_line2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
-
-            <ListView
-                android:id="@+id/calendar_listView_Events"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
         </LinearLayout>
     </ScrollView>
+    <LinearLayout
+        android:id="@+id/calendar_overview2_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/calendar_listView_Events"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
 </LinearLayout>

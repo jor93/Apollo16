@@ -10,6 +10,7 @@ import com.example.jor.hospital.Login;
 import com.example.jor.hospital.db.SQLiteDB;
 import com.example.jor.hospital.db.objects.Doctor;
 import com.example.jor.hospital.db.Tables.DoctorEntry;
+import com.example.jor.hospital.db.Tables.EventEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +147,10 @@ public class DoctorAdapter {
     public void deleteDoctor(long id){
     // TODO delete all other entries!!
 
+        // delete all events with doctor
+        this.db.delete(EventEntry.TABLE_EVENT, EventEntry.KEY_DOCTOR + " = ?",
+                new String[]{String.valueOf(id)});
+
         //delete the doctor
         this.db.delete(DoctorEntry.TABLE_DOCTOR, DoctorEntry.KEY_DOCTOR_ID + " = ?",
                 new String[]{String.valueOf(id)});
@@ -157,7 +162,8 @@ public class DoctorAdapter {
      * for the doctor
      */
     public void deleteAllDoctors(){
-        // TODO delete all other entries!!
+        // delete all events
+        this.db.delete(EventEntry.TABLE_EVENT, null, null);
 
         //delete all doctors
         this.db.delete(DoctorEntry.TABLE_DOCTOR, null, null) ;

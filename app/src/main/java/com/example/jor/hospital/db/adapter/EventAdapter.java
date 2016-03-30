@@ -37,8 +37,8 @@ public class EventAdapter {
         values.put(EventEntry.KEY_ROOM, event.getRoom());
         values.put(EventEntry.KEY_FROMDATE, event.getFromDate());
         values.put(EventEntry.KEY_TODATE, event.getToDate());
-        values.put(EventEntry.KEY_FROMDATE, event.getFromDate());
-        values.put(EventEntry.KEY_TODATE, event.getToDate());
+        values.put(EventEntry.KEY_FROMTIME, event.getFromTime());
+        values.put(EventEntry.KEY_TOTIME, event.getToTime());
         values.put(EventEntry.KEY_NOTIFICATION, event.getNotificiation());
         values.put(EventEntry.KEY_PATIENT, event.getPatient());
         values.put(EventEntry.KEY_DESCRIPTION, event.getDescription());
@@ -66,6 +66,8 @@ public class EventAdapter {
         event.setRoom(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_ROOM)));
         event.setFromDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMDATE)));
         event.setToDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TODATE)));
+        event.setFromTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMTIME)));
+        event.setToTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TOTIME)));
         event.setNotificiation(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_NOTIFICATION)));
         event.setPatient(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_PATIENT)));
         event.setDescription(cursor.getString(cursor.getColumnIndex(EventEntry.KEY_DESCRIPTION)));
@@ -90,6 +92,8 @@ public class EventAdapter {
                 event.setRoom(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_ROOM)));
                 event.setFromDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMDATE)));
                 event.setToDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TODATE)));
+                event.setFromTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMTIME)));
+                event.setToTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TOTIME)));
                 event.setNotificiation(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_NOTIFICATION)));
                 event.setPatient(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_PATIENT)));
                 event.setDescription(cursor.getString(cursor.getColumnIndex(EventEntry.KEY_DESCRIPTION)));
@@ -100,7 +104,7 @@ public class EventAdapter {
         return events;
     }
 
-    public List<Event> getAllEventsByDoctorForDay(long id, long date){
+    public List<Event> getAllEventsByDoctorForDay(long id, int date){
         List<Event> events = new ArrayList<Event>();
         String sql = "SELECT * FROM " + EventEntry.TABLE_EVENT + " WHERE  " + EventEntry.KEY_DOCTOR + "=" + id
                 + " AND " + EventEntry.KEY_FROMDATE + "=" + date;
@@ -115,6 +119,8 @@ public class EventAdapter {
                 event.setRoom(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_ROOM)));
                 event.setFromDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMDATE)));
                 event.setToDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TODATE)));
+                event.setFromTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMTIME)));
+                event.setToTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TOTIME)));
                 event.setNotificiation(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_NOTIFICATION)));
                 event.setPatient(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_PATIENT)));
                 event.setDescription(cursor.getString(cursor.getColumnIndex(EventEntry.KEY_DESCRIPTION)));
@@ -134,6 +140,8 @@ public class EventAdapter {
         values.put(EventEntry.KEY_ROOM, event.getRoom());
         values.put(EventEntry.KEY_FROMDATE, event.getFromDate());
         values.put(EventEntry.KEY_TODATE, event.getToDate());
+        values.put(EventEntry.KEY_FROMTIME, event.getFromTime());
+        values.put(EventEntry.KEY_TOTIME, event.getToTime());
         values.put(EventEntry.KEY_NOTIFICATION, event.getNotificiation());
         values.put(EventEntry.KEY_PATIENT, event.getPatient());
         values.put(EventEntry.KEY_DESCRIPTION, event.getDescription());
@@ -147,9 +155,18 @@ public class EventAdapter {
      * Delete an Event
      */
     public void deleteEvent(long id){
-        //delete the person
+        //delete the event
         this.db.delete(EventEntry.TABLE_EVENT, EventEntry.KEY_EVENT_ID + " = ?",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
+
+    }
+
+    /**
+     * Delete an Event
+     */
+    public void deleteAllEvent(){
+        //delete all events
+        this.db.delete(EventEntry.TABLE_EVENT, null, null);
 
     }
 

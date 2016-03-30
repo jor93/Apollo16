@@ -30,7 +30,6 @@ public class Home extends Navigation {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         // Add Navigation
         onCreateDrawer();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -39,7 +38,6 @@ public class Home extends Navigation {
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         // End Navigation Part
-
 
 
         Intent intent = getIntent();
@@ -53,7 +51,10 @@ public class Home extends Navigation {
             doctor = null;
             IdCollection.doctor_id = -1;
         }
-        setTitle(doctor.getName());
+
+        if(doctor != null)
+            IdCollection.doctor_name = doctor.getName();
+        setTitle(IdCollection.doctor_name);
     }
 
 
@@ -82,6 +83,7 @@ public class Home extends Navigation {
     private void goToLogin(){
         setTitle("Hospital");
         IdCollection.doctor_id = -1;
+        IdCollection.doctor_name = "";
         if(doctor != null) doctor = null;
         Intent login = new Intent(this, Login.class);
         startActivity(login);

@@ -6,6 +6,7 @@ package com.example.jor.hospital;
 public class IdCollection {
 
     public static int doctor_id = -1;
+    public static String doctor_name = "";
 
 
 }

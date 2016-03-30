@@ -8,10 +8,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
@@ -19,12 +23,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CalendarView.OnDateChangeListener;
 
+import com.example.jor.hospital.db.adapter.EventAdapter;
 import com.example.jor.hospital.db.objects.Event;
 
 import java.text.DateFormat;
 
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,25 +46,24 @@ public class Calender extends Navigation {
     // Represents the date in the format name of day, day. month
     private DateFormat df = new SimpleDateFormat("EEEE, dd. MMMM");
     private static DateFormat df_global = new SimpleDateFormat("EEEE, dd. MMMM yyyy");
+    private static DateFormat df_globalTime = new SimpleDateFormat("hh:mm a");
 
     // listview object
     private ListView listView;
-
     private List<Event> eventsForDay;
+    private EventAdap adapter;
 
-    //dummy data for events
-    String[] values = new String[] {
-            "event01",
-            "event02",
-            "event03",
-            "event04",
-    };
+    // db reference
+    private EventAdapter ea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
 
+        ea = new EventAdapter(this);
+
+/*
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,12 +76,29 @@ public class Calender extends Navigation {
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         // End Navigation Part
+*/
 
+        calender = (CalendarView) findViewById(R.id.calenderView);
+        calender.setOnDateChangeListener(new OnDateChangeListener() {
 
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                savedDate.set(year, month, dayOfMonth);
+                today.setText(formatDate(savedDate.getTime()));
+                eventsForDay =  ea.getAllEventsByDoctorForDay(5,NewEvent.parseDateForDB(savedDate));
+                popNewDataToAdapter(eventsForDay);
+
+            }
+        });
+
+        // floating button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Calendar c = Calendar.getInstance();
+                if(NewEvent.removeTime(savedDate).before(NewEvent.removeTime(c))) return;
+                //goToNewEvent();
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -84,42 +106,30 @@ public class Calender extends Navigation {
 
         today = (TextView) findViewById(R.id.calendar_textView_today);
 
-        calender = (CalendarView) findViewById(R.id.calenderView);
-        calender.setOnDateChangeListener(new OnDateChangeListener() {
-
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                savedDate = Calendar.getInstance();
-                savedDate.set(year, month, dayOfMonth);
-                today.setText(formatDate(savedDate.getTime()));
-            }
-        });
-
-
-        Calendar c = Calendar.getInstance();
-        if(savedDate == null) today.setText(formatDate(c.getTime()));
-        else today.setText((formatDate(savedDate.getTime())));
-
+        savedDate = Calendar.getInstance();
+        today.setText((formatDate(savedDate.getTime())));
+        eventsForDay =  ea.getAllEventsByDoctorForDay(5,NewEvent.parseDateForDB(savedDate));
         listView = (ListView) findViewById(R.id.calendar_listView_Events);
-
-
-        // Defined Array values to show in ListView
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        // Assign adapter to ListView
-        listView.setAdapter(adapter);
-        // ListView Item Click Listener
+        adapter = new EventAdap(this, eventsForDay);
+        popNewDataToAdapter(eventsForDay);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // ListView Clicked item index
                 int itemPosition = position;
-                // ListView Clicked item value
-                String itemValue = (String) listView.getItemAtPosition(position);
-                // TODO Open new intent with data here!!!
-
+                Event itemValue = (Event) listView.getItemAtPosition(position);
+                showEvent(itemValue.getEvent_id());
             }
         });
+    }
+
+    private void popNewDataToAdapter(List<Event> events){
+        adapter = new EventAdap(this, events);
+        this.listView.setAdapter(adapter);
+    }
+
+    private void goToNewEvent(){
+        Intent showEvent = new Intent(this, NewEvent.class);
+        startActivity(showEvent);
     }
 
     private void showEvent(int id){
@@ -141,7 +151,7 @@ public class Calender extends Navigation {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_save:
+            case R.id.action_today:
                 goToday();
                 return true;
             default:
@@ -158,10 +168,41 @@ public class Calender extends Navigation {
     public String formatDate(Date d){
         return df.format(d);
     }
-
     // returns date in right format
     public static String formatDateGlobal(Date d){
         return df_global.format(d);
+    }
+    // returns time in right format
+    public static String formatTimeGlobal(Date d) { return df_globalTime.format(d); }
+
+    // custom adapter class for listView
+    public class EventAdap extends ArrayAdapter<Event>{
+
+        public EventAdap(Context context, List<Event> events) {
+            super(context, 0, events);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // Get the data item for this position
+            Event e = getItem(position);
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_event, parent, false);
+            }
+            // Lookup view for data population
+            TextView time = (TextView) convertView.findViewById(R.id.item_event_time);
+            TextView name = (TextView) convertView.findViewById(R.id.item_event_name);
+
+            // Populate the data into the template view using the data object
+            if(e.getFromTime() == -1)
+                time.setText("Whole day");
+            else
+                time.setText(Calender.formatTimeGlobal(NewEvent.extractTime(e.getFromTime()).getTime()));
+            name.setText(e.getEventname());
+            // Return the completed view to render on screen
+            return convertView;
+        }
     }
 
     @Override

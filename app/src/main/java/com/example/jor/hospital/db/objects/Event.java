@@ -119,4 +119,21 @@ public class Event {
     public void setToTime(int toTime) {
         this.toTime = toTime;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "event_id=" + event_id +
+                ", eventname='" + eventname + '\'' +
+                ", room=" + room +
+                ", fromDate=" + fromDate +
+                ", toDate=" + toDate +
+                ", fromTime=" + fromTime +
+                ", toTime=" + toTime +
+                ", notificiation=" + notificiation +
+                ", patient=" + patient +
+                ", description='" + description + '\'' +
+                ", doctor=" + doctor +
+                '}';
+    }
 }

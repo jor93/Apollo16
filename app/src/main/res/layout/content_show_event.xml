@@ -5,9 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="70dp"
     tools:context=".ShowEvent">
 
     <ScrollView
@@ -29,13 +27,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/showEvent_textView_date" />
+                android:id="@+id/showEvent_textView_date"
+                android:textColor="#000000"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/showEvent_textView_name" />
+                android:id="@+id/showEvent_textView_wholeDay"
+                android:textColor="#000000"
+                android:textSize="22dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/showEvent_textView_name"
+                android:textColor="#000000"
+                android:textSize="22dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <View
                 android:id="@+id/showEvent_line1"
@@ -43,26 +59,40 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
 
-            <!-- Notification -->
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/showEvent_textView_notification" />
+                android:id="@+id/showEvent_textView_notification"
+                android:drawableLeft="@drawable/ic_not_24dp"
+                android:drawablePadding="5dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <View
                 android:id="@+id/showEvent_line2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:background="@android:color/darker_gray" />
 
             <!-- Room -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/showEvent_textView_room" />
+                android:id="@+id/showEvent_textView_room"
+                android:textColor="#000000"
+                android:drawableLeft="@drawable/ic_room_24dp"
+                android:drawablePadding="5dp"
+                android:singleLine="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <View
                 android:id="@+id/showEvent_line3"
@@ -70,12 +100,20 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
 
-            <!-- Participant -->
+            <!-- Patient -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/showEvent_textView_participant" />
+                android:id="@+id/showEvent_textView_patient"
+                android:drawableLeft="@drawable/ic_patient_24dp"
+                android:drawablePadding="5dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <View
                 android:id="@+id/showEvent_line4"
@@ -88,15 +126,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:id="@+id/showEvent_textView_description" />
+                android:id="@+id/showEvent_textView_description"
+                android:drawableLeft="@drawable/ic_desc_24dp"
+                android:drawablePadding="5dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <View
                 android:id="@+id/showEvent_line5"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
-
-
+                android:background="@android:color/darker_gray" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
