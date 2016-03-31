@@ -539,7 +539,7 @@ public class NewEvent extends Navigation{
         }
     }
 
-    public class RoomAdap extends ArrayAdapter<Room> implements Filterable{
+    public static class RoomAdap extends ArrayAdapter<Room> implements Filterable{
 
         private ArrayList<Room> suggestions;
         private List<Room> itemsAll;
@@ -610,8 +610,6 @@ public class NewEvent extends Navigation{
                 }
             }
         };
-
     }
-
 }
 
