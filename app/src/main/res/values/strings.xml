@@ -5,6 +5,7 @@
     <!-- Strings related to home activity -->
     <string name="prompt_home">Home</string>
     <string name="menu_home_logout">Logout</string>
+    <string name="menu_home_next">Next events:</string>
 
     <!-- Strings related to login activity -->
     <string name="prompt_email">Email</string>

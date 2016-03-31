@@ -5,48 +5,60 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.jor.hospital.db.adapter.EventAdapter;
 import com.example.jor.hospital.db.adapter.PatientAdapter;
+import com.example.jor.hospital.db.adapter.RoomAdapter;
 import com.example.jor.hospital.db.objects.Event;
 import com.example.jor.hospital.db.objects.Patient;
+import com.example.jor.hospital.db.objects.Room;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class NewEvent extends Navigation{
 
-    private Calendar c = Calendar.getInstance();
-    private int startYear = c.get(Calendar.YEAR);
-    private int startMonth = c.get(Calendar.MONTH);
-    private int startDay = c.get(Calendar.DAY_OF_MONTH);
-    private int startHour = c.get(Calendar.HOUR_OF_DAY);
-
     // data
     private Calendar fromDate;
     private Calendar toDate;
     private int notification;
+    private int startYear;
+    private int startMonth;
+    private int startDay;
+    private int startHour;
+    private List<Room> rooms;
+    private RoomAdap adapter;
 
     // UI references
     private TextView eventName;
-    private TextView room;
+    private AutoCompleteTextView room;
     private CheckBox wholeDay;
     private Spinner spinner;
     private Button btnFrom;
@@ -58,6 +70,7 @@ public class NewEvent extends Navigation{
 
     // db reference
     private EventAdapter ea;
+    private RoomAdapter ra;
     private int patient_id;
     private boolean updating = false;
     private int event_id;
@@ -67,11 +80,24 @@ public class NewEvent extends Navigation{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
 
+        // constructing db reference
         ea = new EventAdapter(this);
+        ra = new RoomAdapter(this);
+
+        // Add Navigation
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        onCreateDrawer();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        // End Navigation Part
 
         // constructing UI
         eventName = (TextView) findViewById(R.id.newEvent_editText_name);
-        room = (TextView) findViewById(R.id.newEvent_editText_room);
+        room = (AutoCompleteTextView) findViewById(R.id.newEvent_autoTextView_room);
         btnFrom = (Button) findViewById(R.id.newEvent_button_from);
         btnTo = (Button) findViewById(R.id.newEvent_button_to);
         btnHourFrom = (Button)  findViewById(R.id.newEvent_button_from_hour);
@@ -94,31 +120,36 @@ public class NewEvent extends Navigation{
             }
         });
 
-        // adding default values for the notifications
-        addItemsToSpinner();
-/*
-        // Add Navigation
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        onCreateDrawer();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-        // End Navigation Part
-*/
+        //String[] sa = new String[]{"1", "100", "110", "1000", "1111233"};
+        //ArrayAdapter<String> aAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, sa);
 
-        Intent intent = getIntent();
+        rooms = ra.getAllRooms();
+        adapter = new RoomAdap(this, rooms);
+        adapter.setNotifyOnChange(true);
+        room.setAdapter(adapter);
+        room.setThreshold(1);
+
+        // adding values for the notifications
+        addItemsToSpinner();
+
+        // TODO uncomment
+       /* Intent intent = getIntent();
         int i = intent.getIntExtra("event_id",-1);
+        Calendar temp = ((Calendar)getIntent().getSerializableExtra("date"));
         if(i != -1){
             Event e =  ea.getEventById(i);
             updating = true;
             this.event_id = e.getEvent_id();
             fillForm(e);
-        } else
+        } else{
             this.event_id = -1;
-
+            this.fromDate = temp;
+            startYear = fromDate.get(Calendar.YEAR);
+            startMonth = fromDate.get(Calendar.MONTH);
+            startDay = fromDate.get(Calendar.DAY_OF_MONTH);
+            startHour = fromDate.get(Calendar.HOUR_OF_DAY);
+            writeDateToButton(fromDate, R.id.newEvent_button_from);
+        }*/
     }
 
     // adding the menu
@@ -176,17 +207,19 @@ public class NewEvent extends Navigation{
         this.fromDate = Calendar.getInstance();
         this.toDate = Calendar.getInstance();
         this.fromDate.set(from.get(Calendar.YEAR), from.get(Calendar.MONTH), from.get(Calendar.DAY_OF_MONTH),
-                (fromTime != null ? fromTime.get(Calendar.HOUR_OF_DAY):0),
-                (fromTime != null ? fromTime.get(Calendar.MINUTE):0));
+                (fromTime != null ? fromTime.get(Calendar.HOUR_OF_DAY) : 0),
+                (fromTime != null ? fromTime.get(Calendar.MINUTE) : 0));
         this.toDate.set(to.get(Calendar.YEAR), to.get(Calendar.MONTH), to.get(Calendar.DAY_OF_MONTH),
-                (toTime != null ? toTime.get(Calendar.HOUR_OF_DAY):0),
-                (toTime != null ? toTime.get(Calendar.MINUTE):0));
+                (toTime != null ? toTime.get(Calendar.HOUR_OF_DAY) : 0),
+                (toTime != null ? toTime.get(Calendar.MINUTE) : 0));
+        startYear = fromDate.get(Calendar.YEAR);
+        startMonth = fromDate.get(Calendar.MONTH);
+        startDay = fromDate.get(Calendar.DAY_OF_MONTH);
+        startHour = fromDate.get(Calendar.HOUR_OF_DAY);
     }
 
-    // logic for checking and saving a new event
+    // checking and saving a new event
     private void saveEvent(){
-        ea.deleteAllEvent();
-
         boolean cancel = false;
         View focusView = null;
 
@@ -203,12 +236,22 @@ public class NewEvent extends Navigation{
             cancel = true;
         }
         // Check if user entered an room
-       /* String room = this.room.getText().toString();
+       String room = this.room.getText().toString();
         if(TextUtils.isEmpty(room)){
             this.room.setError(getString(R.string.error_field_required));
             focusView = this.room;
             cancel = true;
-        }*/
+        }
+
+        // Check if user entered an valid room
+        if(!TextUtils.isEmpty(room)) {
+            Room r = new Room(Integer.parseInt(room));
+            if (!rooms.contains(r)) {
+                this.room.setError(getString(R.string.error_field_required));
+                focusView = this.room;
+                cancel = true;
+            }
+        }
         // Check if user entered a fromDate
         if(fromDate == null){
             this.btnFrom.setError(getString(R.string.error_field_required));
@@ -222,12 +265,14 @@ public class NewEvent extends Navigation{
             cancel = true;
         }
         // Check if user entered right dates
-        if(toDate.before(fromDate)){
-            this.btnTo.setError(getString(R.string.error_invalid_dates));
-            if(!wholeDay.isChecked())
-                this.btnHourTo.setError(getString(R.string.error_invalid_dates));
-            focusView = this.btnTo;
-            cancel = true;
+        if(toDate != null && fromDate != null) {
+            if (toDate.before(fromDate)) {
+                this.btnTo.setError(getString(R.string.error_invalid_dates));
+                if (!wholeDay.isChecked())
+                    this.btnHourTo.setError(getString(R.string.error_invalid_dates));
+                focusView = this.btnTo;
+                cancel = true;
+            }
         }
 
         // Check if user entered a patient
@@ -237,11 +282,15 @@ public class NewEvent extends Navigation{
             focusView = this.patient;
             cancel = true;
         }
+
+        // check if user entered all dates
+        //if()
+
         if (cancel) {
             focusView.requestFocus();
         } else {
             Event e = null;
-            if(updating && event_id != -1)
+            if(updating)
                 e = ea.getEventById(event_id);
             else
                 e = new Event();
@@ -266,19 +315,18 @@ public class NewEvent extends Navigation{
                 e.setToTime(-1);
             }
 
-            if(updating)
-                ea.updateEvent(e);
-            else
-                ea.createEvent(e);
-
-            Log.d("Event created", e.toString());
-            List<Event> events = ea.getAllEventsByDoctor(5);
-
-            for (Event e1 : events){
-                Log.d("event: " , e1.toString());
-            }
+            if(updating) ea.updateEvent(e);
+            else ea.createEvent(e);
+            goBackToCal();
         }
 
+    }
+
+    public void goBackToCal(){
+        Intent cal = new Intent(this, Calender.class);
+        cal.putExtra("startDate", fromDate);
+        cal.putExtra("updatedEvent", updating);
+        startActivity(cal);
     }
 
     // creating Calender object with date
@@ -286,7 +334,7 @@ public class NewEvent extends Navigation{
         Calendar c = Calendar.getInstance();
         String d =  date+"";
         int year = Integer.parseInt(d.substring(0, 4));
-        int month = Integer.parseInt(d.substring(4, 6));
+        int month = Integer.parseInt(d.substring(4, 6))-1;
         int day = Integer.parseInt(d.substring(6, 8));
         c.set(year, month, day);
         return c;
@@ -295,7 +343,7 @@ public class NewEvent extends Navigation{
     // creating Calender object with timne
     public static Calendar extractTime(int time){
         Calendar c = Calendar.getInstance();
-        String d =  time+"";
+        String d = time+"";
         if(d.length() == 3)
             d = "0"+d;
         int hour = Integer.parseInt(d.substring(0, 2));
@@ -413,6 +461,9 @@ public class NewEvent extends Navigation{
                     fromDate = Calendar.getInstance();
                     fromDate.set(year, monthOfYear, dayOfMonth);
                     writeDateToButton(fromDate, R.id.newEvent_button_from);
+                    startYear = fromDate.get(Calendar.YEAR);
+                    startMonth = fromDate.get(Calendar.MONTH);
+                    startDay = fromDate.get(Calendar.DAY_OF_MONTH);
                 } else if(mode == 1){
                     if(fromDate == null) return;
                     toDate = Calendar.getInstance();
@@ -487,5 +538,80 @@ public class NewEvent extends Navigation{
             }
         }
     }
+
+    public class RoomAdap extends ArrayAdapter<Room> implements Filterable{
+
+        private ArrayList<Room> suggestions;
+        private List<Room> itemsAll;
+
+        public RoomAdap(Context context, List<Room> rooms) {
+            super(context, 0, rooms);
+            this.itemsAll = rooms;
+            this.suggestions = new ArrayList<Room>();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // Get the data item for this position
+            Room r = getItem(position);
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_room, parent, false);
+            }
+            // Lookup view for data population
+            TextView nr = (TextView) convertView.findViewById(R.id.item_room_number);
+            // Populate the data into the template view using the data object
+            nr.setText(r.getId()+"");
+            // Return the completed view to render on screen
+            return convertView;
+        }
+
+        @Override
+        public Filter getFilter() {
+            return nameFilter;
+        }
+
+        Filter nameFilter = new Filter() {
+            public String convertResultToString(Object resultValue) {
+                String str = ((Room) (resultValue)).getId()+"";
+                return str;
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                if (constraint != null) {
+                    suggestions.clear();
+                    for (Room r : itemsAll) {
+                        String s = r.getId() + "";
+                        if (s.startsWith(constraint.toString().toLowerCase())) {
+                            suggestions.add(r);
+                        }
+                    }
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = suggestions;
+                    filterResults.count = suggestions.size();
+                    return filterResults;
+                } else {
+                    return new FilterResults();
+                }
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Room> filteredList = (ArrayList<Room>) results.values;
+                if (results != null && results.count > 0) {
+                    clear();
+                    for (Room c : filteredList) {
+                        add(c);
+                    }
+                    notifyDataSetChanged();
+                }
+            }
+        };
+
+    }
+
 }
 

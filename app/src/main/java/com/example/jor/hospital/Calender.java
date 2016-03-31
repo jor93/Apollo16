@@ -22,6 +22,7 @@ import android.widget.CalendarView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CalendarView.OnDateChangeListener;
+import android.widget.Toast;
 
 import com.example.jor.hospital.db.adapter.EventAdapter;
 import com.example.jor.hospital.db.objects.Event;
@@ -63,12 +64,10 @@ public class Calender extends Navigation {
 
         ea = new EventAdapter(this);
 
-/*
+        // Add Navigation
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        // Add Navigation
         onCreateDrawer();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -76,7 +75,6 @@ public class Calender extends Navigation {
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         // End Navigation Part
-*/
 
         calender = (CalendarView) findViewById(R.id.calenderView);
         calender.setOnDateChangeListener(new OnDateChangeListener() {
@@ -98,9 +96,7 @@ public class Calender extends Navigation {
             public void onClick(View view) {
                 Calendar c = Calendar.getInstance();
                 if(NewEvent.removeTime(savedDate).before(NewEvent.removeTime(c))) return;
-                //goToNewEvent();
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                goToNewEvent(savedDate);
             }
         });
 
@@ -110,7 +106,6 @@ public class Calender extends Navigation {
         today.setText((formatDate(savedDate.getTime())));
         eventsForDay =  ea.getAllEventsByDoctorForDay(5,NewEvent.parseDateForDB(savedDate));
         listView = (ListView) findViewById(R.id.calendar_listView_Events);
-        adapter = new EventAdap(this, eventsForDay);
         popNewDataToAdapter(eventsForDay);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -120,6 +115,22 @@ public class Calender extends Navigation {
                 showEvent(itemValue.getEvent_id());
             }
         });
+
+        Intent intent = getIntent();
+        Calendar temp = ((Calendar)getIntent().getSerializableExtra("startDate"));
+        boolean del = intent.getBooleanExtra("deleted", false);
+        boolean updating = intent.getBooleanExtra("updatedEvent", false);
+        String s = intent.getStringExtra("eventName");
+        if(temp != null){
+            calender.setDate(temp.getTime().getTime());
+            eventsForDay =  ea.getAllEventsByDoctorForDay(5,NewEvent.parseDateForDB(temp));
+            popNewDataToAdapter(eventsForDay);
+            if(updating)Toast.makeText(Calender.this, "Event updated", Toast.LENGTH_SHORT).show();
+            else Toast.makeText(Calender.this, "Event created", Toast.LENGTH_SHORT).show();
+        }
+        if(del){
+            Toast.makeText(Calender.this, "Event "+ s +" deleted", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void popNewDataToAdapter(List<Event> events){
@@ -127,8 +138,9 @@ public class Calender extends Navigation {
         this.listView.setAdapter(adapter);
     }
 
-    private void goToNewEvent(){
+    private void goToNewEvent(Calendar c){
         Intent showEvent = new Intent(this, NewEvent.class);
+        showEvent.putExtra("date", c);
         startActivity(showEvent);
     }
 
@@ -162,6 +174,9 @@ public class Calender extends Navigation {
     private void goToday(){
         Calendar todayDate = Calendar.getInstance();
         calender.setDate(todayDate.getTime().getTime());
+        eventsForDay =  ea.getAllEventsByDoctorForDay(5,NewEvent.parseDateForDB(todayDate));
+
+        popNewDataToAdapter(eventsForDay);
     }
 
     // returns date in right format
@@ -176,7 +191,7 @@ public class Calender extends Navigation {
     public static String formatTimeGlobal(Date d) { return df_globalTime.format(d); }
 
     // custom adapter class for listView
-    public class EventAdap extends ArrayAdapter<Event>{
+    public static class EventAdap extends ArrayAdapter<Event>{
 
         public EventAdap(Context context, List<Event> events) {
             super(context, 0, events);

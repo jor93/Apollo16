@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.jor.hospital.db.SQLiteDB;
 import com.example.jor.hospital.db.objects.Event;
@@ -107,7 +108,36 @@ public class EventAdapter {
     public List<Event> getAllEventsByDoctorForDay(long id, int date){
         List<Event> events = new ArrayList<Event>();
         String sql = "SELECT * FROM " + EventEntry.TABLE_EVENT + " WHERE  " + EventEntry.KEY_DOCTOR + "=" + id
-                + " AND " + EventEntry.KEY_FROMDATE + "=" + date;
+                + " AND " + EventEntry.KEY_FROMDATE + "=" + date
+                + " ORDER BY " + EventEntry.KEY_FROMDATE + ", " + EventEntry.KEY_FROMTIME + " ASC";
+
+        Cursor cursor = this.db.rawQuery(sql, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Event event = new Event();
+                event.setEvent_id(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_EVENT_ID)));
+                event.setEventname(cursor.getString(cursor.getColumnIndex(EventEntry.KEY_EVENTNAME)));
+                event.setRoom(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_ROOM)));
+                event.setFromDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMDATE)));
+                event.setToDate(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TODATE)));
+                event.setFromTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_FROMTIME)));
+                event.setToTime(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_TOTIME)));
+                event.setNotificiation(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_NOTIFICATION)));
+                event.setPatient(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_PATIENT)));
+                event.setDescription(cursor.getString(cursor.getColumnIndex(EventEntry.KEY_DESCRIPTION)));
+                event.setDoctor(cursor.getInt(cursor.getColumnIndex(EventEntry.KEY_DOCTOR)));
+                events.add(event);
+            } while(cursor.moveToNext());
+        }
+        return events;
+    }
+
+    public List<Event> getNext3EventsByDoctor(long id){
+        List<Event> events = new ArrayList<Event>();
+        String sql = "SELECT * FROM " + EventEntry.TABLE_EVENT + " WHERE " + EventEntry.KEY_DOCTOR + "=" + id
+                + " ORDER BY " + EventEntry.KEY_FROMDATE + ", " + EventEntry.KEY_FROMTIME + " ASC"
+                + " LIMIT 5";
 
         Cursor cursor = this.db.rawQuery(sql, null);
 
@@ -147,7 +177,7 @@ public class EventAdapter {
         values.put(EventEntry.KEY_DESCRIPTION, event.getDescription());
         values.put(EventEntry.KEY_DOCTOR, event.getDoctor());
 
-        return this.db.update(EventEntry.CREATE_TABLE_EVENT, values, EventEntry.KEY_EVENT_ID + " = ?",
+        return this.db.update(EventEntry.TABLE_EVENT, values, EventEntry.KEY_EVENT_ID + " = ?",
                 new String[] { String.valueOf(event.getEvent_id()) });
     }
 
