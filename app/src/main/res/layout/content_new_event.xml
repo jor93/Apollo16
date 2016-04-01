@@ -58,7 +58,8 @@
                         android:hint="@string/prompt_room"
                         android:imeActionId="@+id/event_room"
                         android:imeOptions="actionUnspecified"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:singleLine="true"/>
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -145,8 +146,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
-                <EditText
-                    android:id="@+id/newEvent_editText_part"
+                <AutoCompleteTextView
+                    android:id="@+id/newEvent_autoTextView_part"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_participants"
@@ -155,13 +156,6 @@
                     android:inputType="textPersonName"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/newEvent_button_part"
-                android:text="add"
-                android:clickable="true" />
         </LinearLayout>
 
             <!-- Description -->

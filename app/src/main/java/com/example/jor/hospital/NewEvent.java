@@ -55,6 +55,8 @@ public class NewEvent extends Navigation{
     private int startHour;
     private List<Room> rooms;
     private RoomAdap adapter;
+    private List<Patient> patients;
+    private PatientAdap pAdapter;
 
     // UI references
     private TextView eventName;
@@ -65,12 +67,13 @@ public class NewEvent extends Navigation{
     private Button btnTo;
     private Button btnHourFrom;
     private Button btnHourTo;
-    private TextView patient;
+    private AutoCompleteTextView patient;
     private TextView desc;
 
     // db reference
     private EventAdapter ea;
     private RoomAdapter ra;
+    private PatientAdapter pa;
     private int patient_id;
     private boolean updating = false;
     private int event_id;
@@ -83,6 +86,7 @@ public class NewEvent extends Navigation{
         // constructing db reference
         ea = new EventAdapter(this);
         ra = new RoomAdapter(this);
+        pa = new PatientAdapter(this);
 
         // Add Navigation
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -102,7 +106,7 @@ public class NewEvent extends Navigation{
         btnTo = (Button) findViewById(R.id.newEvent_button_to);
         btnHourFrom = (Button)  findViewById(R.id.newEvent_button_from_hour);
         btnHourTo = (Button)  findViewById(R.id.newEvent_button_to_hour);
-        patient = (TextView) findViewById(R.id.newEvent_editText_part);
+        patient = (AutoCompleteTextView) findViewById(R.id.newEvent_autoTextView_part);
         desc = (TextView) findViewById(R.id.newEvent_editText_desc);
 
         // constructing checkbox with listener
@@ -120,14 +124,20 @@ public class NewEvent extends Navigation{
             }
         });
 
-        //String[] sa = new String[]{"1", "100", "110", "1000", "1111233"};
-        //ArrayAdapter<String> aAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, sa);
-
         rooms = ra.getAllRooms();
         adapter = new RoomAdap(this, rooms);
         adapter.setNotifyOnChange(true);
         room.setAdapter(adapter);
         room.setThreshold(1);
+
+        patients = pa.getAllPatients();
+        for (Patient p : patients){
+            Log.d("patient: " , p.toString());
+        }
+
+        pAdapter = new PatientAdap(this, patients);
+        patient.setAdapter(pAdapter);
+        patient.setThreshold(1);
 
         // adding values for the notifications
         addItemsToSpinner();
@@ -541,12 +551,14 @@ public class NewEvent extends Navigation{
 
     public static class RoomAdap extends ArrayAdapter<Room> implements Filterable{
 
+        private ArrayList<Room> items;
+        private ArrayList<Room> itemsAll;
         private ArrayList<Room> suggestions;
-        private List<Room> itemsAll;
 
         public RoomAdap(Context context, List<Room> rooms) {
             super(context, 0, rooms);
-            this.itemsAll = rooms;
+            this.items = (ArrayList<Room>) rooms;
+            this.itemsAll = (ArrayList<Room>) items.clone();
             this.suggestions = new ArrayList<Room>();
         }
 
@@ -604,6 +616,82 @@ public class NewEvent extends Navigation{
                 if (results != null && results.count > 0) {
                     clear();
                     for (Room c : filteredList) {
+                        add(c);
+                    }
+                    notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
+
+    public static class PatientAdap extends ArrayAdapter<Patient> implements Filterable{
+
+        private ArrayList<Patient> items;
+        private ArrayList<Patient> itemsAll;
+        private ArrayList<Patient> suggestions;
+
+        public PatientAdap(Context context, List<Patient> pats) {
+            super(context, 0, pats);
+            this.items = (ArrayList<Patient>) pats;
+            this.itemsAll = (ArrayList<Patient>) items.clone();
+            this.suggestions = new ArrayList<Patient>();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // Get the data item for this position
+            Patient r = getItem(position);
+            // Check if an existing view is being reused, otherwise inflate the view
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_room, parent, false);
+            }
+            // Lookup view for data population
+            TextView nr = (TextView) convertView.findViewById(R.id.item_room_number);
+            // Populate the data into the template view using the data object
+            nr.setText(r.getName());
+            // Return the completed view to render on screen
+            return convertView;
+        }
+
+        @Override
+        public Filter getFilter() {
+            return nameFilter;
+        }
+
+        Filter nameFilter = new Filter() {
+            public String convertResultToString(Object resultValue) {
+                String str = ((Patient) (resultValue)).getName();
+                return str;
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                if (constraint != null) {
+                    suggestions.clear();
+                    for (Patient r : itemsAll) {
+                        String s = r.getName().toLowerCase();
+                        if (s.contains(constraint.toString().toLowerCase())) {
+                            suggestions.add(r);
+                        }
+                    }
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = suggestions;
+                    filterResults.count = suggestions.size();
+                    return filterResults;
+                } else {
+                    return new FilterResults();
+                }
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Patient> filteredList = (ArrayList<Patient>) results.values;
+                if (results != null && results.count > 0) {
+                    clear();
+                    for (Patient c : filteredList) {
                         add(c);
                     }
                     notifyDataSetChanged();
