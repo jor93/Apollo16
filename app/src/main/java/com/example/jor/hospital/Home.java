@@ -49,6 +49,8 @@ public class Home extends Navigation {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        setTitle("Home");
+
         // constructing db reference
         ea = new EventAdapter(this);
         pa = new PatientAdapter(this);
@@ -76,13 +78,8 @@ public class Home extends Navigation {
             IdCollection.doctor_id = -1;
         }
 
-        // TODO remove after
-        IdCollection.doctor_id = 5;
-        doctor = da.getDoctorById(5);
-
         if(doctor != null)
             IdCollection.doctor_name = doctor.getName();
-        setTitle(IdCollection.doctor_name);
 
         listView = (ListView) findViewById(R.id.home_listView_Events);
         events = ea.getNext3EventsByDoctor(IdCollection.doctor_id);
@@ -110,6 +107,14 @@ public class Home extends Navigation {
         startActivity(showEvent);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        events = ea.getNext3EventsByDoctor(IdCollection.doctor_id);
+        adapter = new Home.HomeAdap(this, events);
+        listView.setAdapter(adapter);
+    }
+
     // adding the menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -133,7 +138,6 @@ public class Home extends Navigation {
 
     // go to login activity
     private void goToLogin(){
-        setTitle("Hospital");
         IdCollection.doctor_id = -1;
         IdCollection.doctor_name = "";
         if(doctor != null) doctor = null;

@@ -69,7 +69,6 @@ public class ShowEvent extends Navigation {
         patient = (TextView) findViewById(R.id.showEvent_textView_patient);
         desc = (TextView)  findViewById(R.id.showEvent_textView_description);
 
-
         Intent intent = getIntent();
         int i = intent.getIntExtra("event_id",-1);
         if(i != -1){

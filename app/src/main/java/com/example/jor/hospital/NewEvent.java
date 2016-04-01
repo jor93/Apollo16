@@ -1,9 +1,13 @@
 package com.example.jor.hospital;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -78,10 +82,13 @@ public class NewEvent extends Navigation{
     private boolean updating = false;
     private int event_id;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
+
+        setTitle("New event");
 
         // constructing db reference
         ea = new EventAdapter(this);
@@ -109,7 +116,6 @@ public class NewEvent extends Navigation{
         patient = (AutoCompleteTextView) findViewById(R.id.newEvent_autoTextView_part);
         desc = (TextView) findViewById(R.id.newEvent_editText_desc);
 
-        // constructing checkbox with listener
         wholeDay = (CheckBox) findViewById(R.id.newEvent_checkBox_dayevent);
         wholeDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -131,19 +137,13 @@ public class NewEvent extends Navigation{
         room.setThreshold(1);
 
         patients = pa.getAllPatients();
-        for (Patient p : patients){
-            Log.d("patient: " , p.toString());
-        }
-
         pAdapter = new PatientAdap(this, patients);
         patient.setAdapter(pAdapter);
         patient.setThreshold(1);
 
-        // adding values for the notifications
         addItemsToSpinner();
 
-        // TODO uncomment
-       /* Intent intent = getIntent();
+        Intent intent = getIntent();
         int i = intent.getIntExtra("event_id",-1);
         Calendar temp = ((Calendar)getIntent().getSerializableExtra("date"));
         if(i != -1){
@@ -159,7 +159,18 @@ public class NewEvent extends Navigation{
             startDay = fromDate.get(Calendar.DAY_OF_MONTH);
             startHour = fromDate.get(Calendar.HOUR_OF_DAY);
             writeDateToButton(fromDate, R.id.newEvent_button_from);
-        }*/
+        }
+    }
+
+    private void startAlarm(Event e, Calendar c) {
+        AlarmReceiver.id = e.getEvent_id();
+        AlarmReceiver.s = e.getEventname();
+        long reminderTime = c.getTimeInMillis() - AlarmReceiver.notValues[e.getNotificiation()];
+        AlarmReceiver.time = reminderTime;
+
+        Intent intentAlarm = new Intent(this,AlarmReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime, PendingIntent.getBroadcast(this, 1, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
     // adding the menu
@@ -237,6 +248,10 @@ public class NewEvent extends Navigation{
         eventName.setError(null);
         room.setError(null);
         btnFrom.setError(null);
+        btnTo.setError(null);
+        btnHourFrom.setError(null);
+        btnHourTo.setError(null);
+        patient.setError(null);
 
         // Check if user entered an eventname
         String name = this.eventName.getText().toString();
@@ -255,25 +270,47 @@ public class NewEvent extends Navigation{
 
         // Check if user entered an valid room
         if(!TextUtils.isEmpty(room)) {
-            Room r = new Room(Integer.parseInt(room));
-            if (!rooms.contains(r)) {
-                this.room.setError(getString(R.string.error_field_required));
+            if (!checkRoom(rooms, Integer.parseInt(room))) {
+                this.room.setError(getString(R.string.error_invalid_room));
                 focusView = this.room;
                 cancel = true;
             }
         }
+
         // Check if user entered a fromDate
         if(fromDate == null){
             this.btnFrom.setError(getString(R.string.error_field_required));
             focusView = this.btnFrom;
             cancel = true;
+            if(!wholeDay.isChecked()){
+                this.btnHourFrom.setError(getString(R.string.error_field_required));
+            }
         }
+
         // Check if user entered a toDate
         if(toDate == null){
             this.btnTo.setError(getString(R.string.error_invalid_dates));
             focusView = this.btnTo;
             cancel = true;
+            if(!wholeDay.isChecked()){
+                this.btnHourTo.setError(getString(R.string.error_field_required));
+            }
         }
+
+        // Check if user entered an hour if whole day is unchecked
+        if(!wholeDay.isChecked()){
+            if(this.btnHourFrom.getText().toString().compareTo(getString(R.string.prompt_hour_from)) == 0){
+                this.btnHourFrom.setError(getString(R.string.error_field_required));
+                focusView = this.btnHourFrom;
+                cancel = true;
+            }
+            if(this.btnHourTo.getText().toString().compareTo(getString(R.string.prompt_hour_to)) == 0){
+                this.btnHourTo.setError(getString(R.string.error_field_required));
+                focusView = this.btnHourTo;
+                cancel = true;
+            }
+        }
+
         // Check if user entered right dates
         if(toDate != null && fromDate != null) {
             if (toDate.before(fromDate)) {
@@ -293,8 +330,14 @@ public class NewEvent extends Navigation{
             cancel = true;
         }
 
-        // check if user entered all dates
-        //if()
+        // Check if user entered an valid patient
+        if(!TextUtils.isEmpty(patient)) {
+            if (!checkPatient(patients, patient)) {
+                this.patient.setError(getString(R.string.error_invalid_patient));
+                focusView = this.patient;
+                cancel = true;
+            }
+        }
 
         if (cancel) {
             focusView.requestFocus();
@@ -304,19 +347,18 @@ public class NewEvent extends Navigation{
                 e = ea.getEventById(event_id);
             else
                 e = new Event();
+
             // required fields
-            e.setEventname(this.eventName.getText().toString());
-            e.setRoom(50);
-            //e.setRoom(Integer.getInteger(this.room.getText().toString()));
+            e.setEventname(this.eventName.getText().toString().trim());
+            e.setRoom(Integer.parseInt(this.room.getText().toString().trim()));
             e.setFromDate(parseDateForDB(fromDate));
             e.setToDate(parseDateForDB(toDate));
             e.setNotificiation(this.notification);
-            e.setPatient(1);
-            //e.setDoctor(IdCollection.doctor_id);
-            e.setDoctor(5);
+            e.setPatient(checkPatientID(patients, patient));
+            e.setDoctor(IdCollection.doctor_id);
 
             // optionals fields
-            e.setDescription(this.desc.getText().toString());
+            e.setDescription(this.desc.getText().toString().trim());
             if(!wholeDay.isChecked()){
                 e.setFromTime(parseTimeForDB(fromDate));
                 e.setToTime(parseTimeForDB(toDate));
@@ -325,13 +367,46 @@ public class NewEvent extends Navigation{
                 e.setToTime(-1);
             }
 
-            if(updating) ea.updateEvent(e);
+            if(updating)ea.updateEvent(e);
             else ea.createEvent(e);
+
+
+            startAlarm(e,fromDate);
             goBackToCal();
         }
-
     }
 
+    // check if room exists
+    public boolean checkRoom(List<Room> list, int value){
+        boolean exists = false;
+        for (Room r : list){
+            if(r.getId() == value)
+                exists = true;
+        }
+        return exists;
+    }
+
+    // check if patient exists
+    public boolean checkPatient(List<Patient> list, String value){
+        boolean exists = false;
+        for (Patient r : list){
+            if(r.getName().compareTo(value) == 0)
+                exists = true;
+        }
+        return exists;
+    }
+
+    // get patient id from list
+    private int checkPatientID(List<Patient> list, String value){
+        int index = -1;
+        for (Patient r : list){
+            if(r.getName().compareTo(value) == 0)
+                index = r.getPatient_id();
+        }
+        return index;
+    }
+
+    // go back to overview
     public void goBackToCal(){
         Intent cal = new Intent(this, Calender.class);
         cal.putExtra("startDate", fromDate);
@@ -362,12 +437,14 @@ public class NewEvent extends Navigation{
         c.set(Calendar.MINUTE,min);
         return c;
     }
+
     // make date ready to write in db
     public static int parseDateForDB(Calendar c){
         return Integer.parseInt(c.get(Calendar.YEAR) + ""
                 + (c.get(Calendar.MONTH) < 10 ? 0 + "" + (c.get(Calendar.MONTH) + 1) : (c.get(Calendar.MONTH) + 1)) + ""
-                + (c.get(Calendar.DAY_OF_MONTH) < 10 ? "" + c.get(Calendar.DAY_OF_MONTH) : c.get(Calendar.DAY_OF_MONTH)));
+                + (c.get(Calendar.DAY_OF_MONTH) < 10 ? 0 + "" + c.get(Calendar.DAY_OF_MONTH) : c.get(Calendar.DAY_OF_MONTH)));
     }
+
     // make time ready to write in db
     public static int parseTimeForDB(Calendar c){
         return Integer.parseInt(c.get(Calendar.HOUR_OF_DAY) + ""
@@ -402,14 +479,14 @@ public class NewEvent extends Navigation{
         spinner.setAdapter(adapter);
     }
 
-    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
-
-        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-            notification = pos;
-        }
-        public void onNothingSelected(AdapterView<?> parent) {}
+    // remove time to ensure check
+    public static Calendar removeTime(Calendar calendar){
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
     }
-
 
     // starting datepicker fragment
     // 0=from; 1=to
@@ -441,14 +518,6 @@ public class NewEvent extends Navigation{
         dialogFragment.show(getFragmentManager(), "start_time_picker");
     }
 
-    // remove time to ensure check
-    public static Calendar removeTime(Calendar calendar){
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar;
-    }
 
     public class StartDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener{
         private int mode;
@@ -526,6 +595,7 @@ public class NewEvent extends Navigation{
                 fromDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 fromDate.set(Calendar.MINUTE, minute);
                 writeDateToButton(fromDate, R.id.newEvent_button_from_hour);
+                startHour = fromDate.get(Calendar.HOUR_OF_DAY);
             } else if(mode == 1) {
                 if(toDate == null) return;
                 if(fromDate.get(Calendar.YEAR) == toDate.get(Calendar.YEAR) &&
@@ -699,5 +769,16 @@ public class NewEvent extends Navigation{
             }
         };
     }
+
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+            notification = pos;
+        }
+        public void onNothingSelected(AdapterView<?> parent) {}
+    }
+
+
+
 }
 

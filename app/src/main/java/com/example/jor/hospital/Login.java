@@ -51,7 +51,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     // Id to identity READ_CONTACTS permission request.
-    private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int REQUEST_READ_CONTACTS = 1;
 
     // Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
@@ -82,10 +82,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Home home = new Home();
-        if(home.getDoctor() != null){
-            goToHome(home.getDoctor().getId());
-        }
 
         // set up adapter
         da = new DoctorAdapter(this);
