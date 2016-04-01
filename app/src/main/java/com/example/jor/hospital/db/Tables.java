@@ -58,14 +58,14 @@ public final class Tables{
     }
 
     /***********************************************************************
-     *** Patient Table													 ***
+     *** ShowPatient Table													 ***
      ***********************************************************************/
     //Represents the rows of a table
     public static abstract class PatientEntry implements BaseColumns{
         //Table name
         public static final String TABLE_PATIENT = "patient";
 
-        //Patient Column names
+        //ShowPatient Column names
         public static final String KEY_PATIENT_ID = "patient_id";
         public static final String KEY_GENDER = "gender";
         public static final String KEY_LASTNAME = "lastname";
@@ -74,10 +74,10 @@ public final class Tables{
         public static final String KEY_ADDRESS = "address";
         public static final String KEY_CITY = "city";
         public static final String KEY_AHV_NUMBER = "ahv_number";
-        //Patient foreign keys
+        //ShowPatient foreign keys
         public static final String KEY_ROOM = "room_fk";
 
-        //Table Patient create statement
+        //Table ShowPatient create statement
         public static final String CREATE_TABLE_PATIENT = "CREATE TABLE "
                 + TABLE_PATIENT + "("
                 + PatientEntry.KEY_PATIENT_ID + " INTEGER PRIMARY KEY,"
@@ -122,11 +122,11 @@ public final class Tables{
         //Table name
         public static final String TABLE_HISTORY = "history";
 
-        //Patient Column names
+        //ShowPatient Column names
         public static final String KEY_HISTORY_ID = "history_id";
         public static final String KEY_NOTES = "notes";
         public static final String KEY_START_DATE = "start_date";
-        public static final String KEY_END_DATE = "end_date";
+
         //History foreign keys
         public static final String KEY_PATIENT = "patient_fk";
         public static final String KEY_DOCTOR = "doctor_fk";
@@ -141,7 +141,6 @@ public final class Tables{
                 + HistoryEntry.KEY_TREATMENT + " INT NOT NULL,"
                 + HistoryEntry.KEY_NOTES + " TEXT, "
                 + HistoryEntry.KEY_START_DATE + " TEXT, "
-                + HistoryEntry.KEY_END_DATE + " TEXT, "
                 + "FOREIGN KEY (" + KEY_PATIENT + ") REFERENCES " + PatientEntry.TABLE_PATIENT + " (" + PatientEntry.KEY_PATIENT_ID + "), "
                 + "FOREIGN KEY (" + KEY_DOCTOR + ") REFERENCES " + DoctorEntry.TABLE_DOCTOR + " (" + DoctorEntry.KEY_DOCTOR_ID + "), "
                 + "FOREIGN KEY (" + KEY_TREATMENT + ") REFERENCES " + TreatmentEntry.TABLE_TREATMENT + " (" + TreatmentEntry.KEY_TREATMENT_ID + ") "

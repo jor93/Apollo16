@@ -8,5 +8,8 @@ public class IdCollection {
     public static int doctor_id = -1;
     public static String doctor_name = "";
 
+    public static int patient_id = -1;
+    public static String patient_name = "";
+
 
 }

@@ -12,7 +12,7 @@ public class Patient {
     private String adress;
     private String city;
     private String ahv_number;
-    private int room;
+    private int room = 0;
 
     public Patient(){}
 
@@ -102,7 +102,7 @@ public class Patient {
 
     @Override
     public String toString() {
-        return "Patient{" +
+        return "ShowPatient{" +
                 "patient_id=" + patient_id +
                 ", gender=" + gender +
                 ", lastname='" + lastname + '\'' +

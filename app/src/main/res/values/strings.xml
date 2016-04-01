@@ -72,6 +72,10 @@
     <string name="lbl_pName">Name</string>
     <string name="lbl_bDate">Birthdate</string>
     <string name="lbl_Adress">Adress</string>
+    <string name="lbl_Treatment">Treatment</string>
+    <string name="lbl_gender">Gender</string>
+    <string name="lbl_lName">Lastname</string>
+    <string name="lbl_fName">Firstname</string>
     <string name="lbl_City">City</string>
     <string name="lbl_AHV_Number">AHV Number:</string>
     <string name="lbl_cRoom">Current Room:</string>
@@ -88,6 +92,13 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="error_invalid_treatment">Please enter a valid treatment</string>
+
+    <string-array name="array_gender">
+        <item>male</item>
+        <item>female</item>
+
+    </string-array>
 
     <!-- Strings related to Settings -->
 

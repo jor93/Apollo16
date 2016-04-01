@@ -44,7 +44,7 @@ public class PatientAdapter {
     }
 
     /**
-     * Find one Patient by Id
+     * Find one ShowPatient by Id
      */
     public Patient getPatientById(long id){
         String sql = "SELECT * FROM " + Tables.PatientEntry.TABLE_PATIENT +
@@ -100,7 +100,7 @@ public class PatientAdapter {
     }
 
     /**
-     *  Update a Patient
+     *  Update a ShowPatient
      */
     public int updatePatient(Patient patient){
         ContentValues values = new ContentValues();
@@ -118,17 +118,10 @@ public class PatientAdapter {
     }
 
     /**
-     * Delete a Patient - this will also delete all records
+     * Delete a ShowPatient - this will also delete all records
      * for the patient
      */
     public void deletePatient(long id){
-/*		RecordDataSource pra = new RecordDataSource(context);
-		//get all records of the user
-		List<Record> records = pra.getAllRecordsByPatient(id);
-
-		for(Record record : records){
-			pra.deleteRecord(record.getId());
-		}*/
 
         //delete the patient
         this.db.delete(PatientEntry.TABLE_PATIENT, PatientEntry.KEY_PATIENT_ID + " = ?",

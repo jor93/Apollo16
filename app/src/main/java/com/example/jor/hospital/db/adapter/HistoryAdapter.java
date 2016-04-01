@@ -35,7 +35,6 @@ public class  HistoryAdapter {
         values.put(HistoryEntry.KEY_TREATMENT, history.getTreatment());
         values.put(HistoryEntry.KEY_NOTES, history.getNotes());
         values.put(HistoryEntry.KEY_START_DATE, history.getStart_date());
-        values.put(HistoryEntry.KEY_END_DATE, history.getEnd_date());
 
         id = this.db.insert(HistoryEntry.TABLE_HISTORY, null, values);
 
@@ -61,14 +60,14 @@ public class  HistoryAdapter {
         history.setDoctor(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_DOCTOR)));
         history.setTreatment(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_TREATMENT)));
         history.setNotes(cursor.getString(cursor.getColumnIndex(HistoryEntry.KEY_NOTES)));
-        history.setStart_date(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_START_DATE)));
-        history.setEnd_date(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_END_DATE)));
+        history.setStart_date(cursor.getString(cursor.getColumnIndex(HistoryEntry.KEY_START_DATE)));
+
 
         return history;
     }
 
     /**
-     * Get History entries by Patient
+     * Get History entries by ShowPatient
      */
     public List<History> getHistorysByPatient(int patient_id){
         List<History> historys = new ArrayList<History>();
@@ -85,8 +84,7 @@ public class  HistoryAdapter {
                 history.setDoctor(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_DOCTOR)));
                 history.setTreatment(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_TREATMENT)));
                 history.setNotes(cursor.getString(cursor.getColumnIndex(HistoryEntry.KEY_NOTES)));
-                history.setStart_date(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_START_DATE)));
-                history.setEnd_date(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_END_DATE)));
+                history.setStart_date(cursor.getString(cursor.getColumnIndex(HistoryEntry.KEY_START_DATE)));
                 historys.add(history);
             } while(cursor.moveToNext());
         }
@@ -112,8 +110,8 @@ public class  HistoryAdapter {
                 history.setDoctor(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_DOCTOR)));
                 history.setTreatment(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_TREATMENT)));
                 history.setNotes(cursor.getString(cursor.getColumnIndex(HistoryEntry.KEY_NOTES)));
-                history.setStart_date(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_START_DATE)));
-                history.setEnd_date(cursor.getInt(cursor.getColumnIndex(HistoryEntry.KEY_END_DATE)));
+                history.setStart_date(cursor.getString(cursor.getColumnIndex(HistoryEntry.KEY_START_DATE)));
+
 
                 historys.add(history);
             } while(cursor.moveToNext());
@@ -132,7 +130,6 @@ public class  HistoryAdapter {
         values.put(HistoryEntry.KEY_TREATMENT, history.getTreatment());
         values.put(HistoryEntry.KEY_NOTES, history.getNotes());
         values.put(HistoryEntry.KEY_START_DATE, history.getStart_date());
-        values.put(HistoryEntry.KEY_END_DATE, history.getEnd_date());
         return this.db.update(HistoryEntry.TABLE_HISTORY, values, HistoryEntry.KEY_HISTORY_ID + " = ?",
                 new String[] { String.valueOf(history.getHistory_id()) });
     }
@@ -142,13 +139,6 @@ public class  HistoryAdapter {
      * for the history
      */
     public void deleteHistory(long id){
-/*		RecordDataSource pra = new RecordDataSource(context);
-		//get all records of the user
-		List<Record> records = pra.getAllRecordsByHistory(id);
-
-		for(Record record : records){
-			pra.deleteRecord(record.getId());
-		}*/
 
         //delete the history
         this.db.delete(HistoryEntry.TABLE_HISTORY, HistoryEntry.KEY_HISTORY_ID + " = ?",

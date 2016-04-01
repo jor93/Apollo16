@@ -48,7 +48,7 @@ public class DBCheck extends AppCompatActivity {
         Patient pat9 = new Patient(true, "Winkel", "Kevin", "06.07.1960","Spinatsch 37","8815 Morschwand","584.7458.1475.00");
         Patient pat10 = new Patient(true, "Reinhard", "Stefan", "21.05.1938","Via Altisio 100","4509 Solothurn","253.6351.3698.00");
         Patient pat11 = new Patient(false, "Neudorf", "Franziska", "07.11.1940","Postfach 90","6982 Agno","697.2478.4452.00");
-        Patient pat12 = new Patient(true, "Kaufmann", "Tobias", "25.09.1992","Avenue d'Ouchy 91,","Plasselb","742.3698.1136.00");
+        Patient pat12 = new Patient(true, "Varonier", "Michael", "13.09.1994","Oberdorf 35","3953 Varen","722.3698.1136.00");
         Patient pat13 = new Patient(true, "Baumgartner", "David", "28.11.1984","Brunnenstrasse 53","8932 Rossau","352.1478.1826.00");
         Patient pat14 = new Patient(true, "Bachmeier", "Alexander", "27.09.1966","Im Sandbüel 30","1708 Fribourg","397.1256.7469.00");
         Patient pat15 = new Patient(false, "Fuchs", "Laura", "02.01.1968","Via Luzzas 29","6145 Fischbach","425.1365.3698.00");
@@ -195,7 +195,7 @@ public class DBCheck extends AppCompatActivity {
     private void createRooms() {
         RoomAdapter ra = new RoomAdapter(this);
         ra.deleteAllRooms();
-        for (int i = 0 ; i <  101 ; i ++){
+        for (int i = 1 ; i <  101 ; i ++){
             Room room = new Room();
             room.setId(i);
             ra.createRoom(room);

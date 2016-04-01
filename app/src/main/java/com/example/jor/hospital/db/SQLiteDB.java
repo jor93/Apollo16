@@ -37,7 +37,7 @@ public class SQLiteDB extends SQLiteOpenHelper {
     Table creation list:
     1. Doctor
     2. Room
-    3. Patient
+    3. ShowPatient
     4. Treatment
     5. History
     6. Event

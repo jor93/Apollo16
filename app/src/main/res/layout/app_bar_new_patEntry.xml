@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.sandro.rs_hospital.NewPatient">
+    tools:context="com.example.sandro.rs_hospital.NewPatEntry">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,14 +21,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_new_patient" />
+    <include layout="@layout/content_new_patentry" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_camera" />
+
 
 </android.support.design.widget.CoordinatorLayout>
