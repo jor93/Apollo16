@@ -57,5 +57,4 @@
         <!-- Receiver for notification -->
         <receiver android:name=".AlarmReceiver" />
     </application>
-
 </manifest>

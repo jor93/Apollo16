@@ -164,6 +164,8 @@ public class NewEvent extends Navigation{
     }
 
     private void startAlarm(Event e, Calendar c) {
+        Calendar now = Calendar.getInstance();
+        if(c.before(now)) return;
         AlarmReceiver.id = e.getEvent_id();
         AlarmReceiver.s = e.getEventname();
         long reminderTime = c.getTimeInMillis() - AlarmReceiver.notValues[e.getNotificiation()];
@@ -426,7 +428,7 @@ public class NewEvent extends Navigation{
         return c;
     }
 
-    // creating Calender object with timne
+    // creating Calender object with time
     public static Calendar extractTime(int time){
         Calendar c = Calendar.getInstance();
         String d = time+"";
@@ -448,7 +450,7 @@ public class NewEvent extends Navigation{
 
     // make time ready to write in db
     public static int parseTimeForDB(Calendar c){
-        return Integer.parseInt(c.get(Calendar.HOUR_OF_DAY) + ""
+            return Integer.parseInt(c.get(Calendar.HOUR_OF_DAY) + ""
                 + (c.get(Calendar.MINUTE) < 10 ? 0 + "" + c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)));
     }
 

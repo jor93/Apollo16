@@ -49,6 +49,8 @@ public class Home extends Navigation {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Log.d("ya", "asdfasdfadsfasdfasdfasdf");
+
         setTitle("Home");
 
         // constructing db reference
@@ -75,7 +77,6 @@ public class Home extends Navigation {
             IdCollection.doctor_id = i;
         } else {
             doctor = null;
-            IdCollection.doctor_id = -1;
         }
 
         if(doctor != null)
@@ -95,7 +96,6 @@ public class Home extends Navigation {
         });
 
     }
-
 
     public Doctor getDoctor() {
         return doctor;

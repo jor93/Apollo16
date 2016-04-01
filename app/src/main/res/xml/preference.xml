@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference>
-        android:key="test"
-        android:title="my settings"
-        android:summary="enter values here"
-        android:inputType="textPassword"
-    </EditTextPreference>
+    <PreferenceCategory
+        android:title="Password Settings">
+        <EditTextPreference
+            android:key="PREF_PASSWD"
+            android:title="Password"
+            android:summary="Change your password" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Language Settings">
+        <ListPreference
+            android:key="PREF_LANG"
+            android:title="Language"
+            android:summary="Choose your language"
+            android:entries="@array/listentries"
+            android:entryValues="@array/listvalues" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
