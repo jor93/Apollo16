@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -527,7 +528,15 @@ public class NewEvent extends Navigation{
         }
 
         @Override
+        public void onDestroyView() {
+            if (getDialog() != null && getRetainInstance())
+                getDialog().setDismissMessage(null);
+            super.onDestroyView();
+        }
+
+        @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+            setRetainInstance(true);
             // Use the current date as the default date in the picker
             DatePickerDialog dialog = new DatePickerDialog(NewEvent.this, this, startYear, startMonth, startDay);
             return dialog;
@@ -582,7 +591,15 @@ public class NewEvent extends Navigation{
         }
 
         @Override
+        public void onDestroyView() {
+            if (getDialog() != null && getRetainInstance())
+                getDialog().setDismissMessage(null);
+            super.onDestroyView();
+        }
+
+        @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+            setRetainInstance(true);
             // Use the current date as the default date in the picker
             TimePickerDialog dialog = new TimePickerDialog(NewEvent.this, this, startHour, 0, true);
             return dialog;

@@ -3,10 +3,13 @@ package com.example.jor.hospital;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,13 +23,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.Toast;
+
 import com.example.jor.hospital.db.adapter.EventAdapter;
 import com.example.jor.hospital.db.objects.Event;
+
 import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 
 
 public class Calender extends Navigation {
@@ -72,7 +81,6 @@ public class Calender extends Navigation {
         // End Navigation Part
 
         // constructing UI reference
-        today = (TextView) findViewById(R.id.calendar_textView_today);
         calender = (CalendarView) findViewById(R.id.calenderView);
         calender.setOnDateChangeListener(new OnDateChangeListener() {
 
@@ -80,11 +88,13 @@ public class Calender extends Navigation {
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
                 savedDate.set(year, month, dayOfMonth);
                 today.setText(formatDate(savedDate.getTime()));
-                eventsForDay = ea.getAllEventsByDoctorForDay(IdCollection.doctor_id, NewEvent.parseDateForDB(savedDate));
+                eventsForDay =  ea.getAllEventsByDoctorForDay(IdCollection.doctor_id,NewEvent.parseDateForDB(savedDate));
                 popNewDataToAdapter(eventsForDay);
 
             }
         });
+
+        // floating button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +104,14 @@ public class Calender extends Navigation {
                 goToNewEvent(savedDate);
             }
         });
+
+        today = (TextView) findViewById(R.id.calendar_textView_today);
+
+        savedDate = Calendar.getInstance();
+        today.setText((formatDate(savedDate.getTime())));
+        eventsForDay =  ea.getAllEventsByDoctorForDay(IdCollection.doctor_id,NewEvent.parseDateForDB(savedDate));
+        listView = (ListView) findViewById(R.id.calendar_listView_Events);
+        popNewDataToAdapter(eventsForDay);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -103,14 +121,6 @@ public class Calender extends Navigation {
             }
         });
 
-        // set data
-        savedDate = Calendar.getInstance();
-        today.setText((formatDate(savedDate.getTime())));
-        eventsForDay =  ea.getAllEventsByDoctorForDay(IdCollection.doctor_id,NewEvent.parseDateForDB(savedDate));
-        listView = (ListView) findViewById(R.id.calendar_listView_Events);
-        popNewDataToAdapter(eventsForDay);
-
-        // check intent
         Intent intent = getIntent();
         Calendar temp = ((Calendar)getIntent().getSerializableExtra("startDate"));
         boolean del = intent.getBooleanExtra("deleted", false);
@@ -123,9 +133,9 @@ public class Calender extends Navigation {
             if(updating)Toast.makeText(Calender.this, "Event updated", Toast.LENGTH_SHORT).show();
             else Toast.makeText(Calender.this, "Event created", Toast.LENGTH_SHORT).show();
         }
-        if(del)
+        if(del){
             Toast.makeText(Calender.this, "Event "+ s +" deleted", Toast.LENGTH_SHORT).show();
-
+        }
     }
 
     // assign new events to adapter

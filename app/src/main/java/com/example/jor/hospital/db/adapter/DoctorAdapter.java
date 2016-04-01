@@ -37,8 +37,7 @@ public class DoctorAdapter {
 
         Cursor cursor = this.db.rawQuery(sql, null);
         if(cursor != null)
-            if(cursor.getCount() <= 0) return false;
-            else return true;
+            return cursor.getCount() > 0;
         else
             return false;
     }

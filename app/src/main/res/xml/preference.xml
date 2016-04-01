@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:id="@string/settings_password"
-        android:title="@string/title"
-        android:summary="@string/summary"
+    <EditTextPreference>
+        android:key="test"
+        android:title="my settings"
+        android:summary="enter values here"
         android:inputType="textPassword"
-        />
+    </EditTextPreference>
 </PreferenceScreen>
